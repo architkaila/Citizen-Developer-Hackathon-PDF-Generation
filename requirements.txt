@@ -1,3 +1,5 @@
 openpyxl==3.1.2
 pdfrw==0.4
 PyPDF2==3.0.1
+streamlit==1.18.1
+altair==4.0

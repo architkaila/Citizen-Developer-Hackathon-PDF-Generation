@@ -5,6 +5,7 @@ from datetime import date
 from mapping import sheet_mapping
 import openpyxl
 from pdfrw import PdfDict, PdfObject
+import shutil   
 
 today = date.today()
 
@@ -43,6 +44,10 @@ def read_excel(filename):
         yield dict(zip(headers, row))
 
     workbook.close()
+
+def zip_folder(folder_path, output_filename):
+    """Zip the contents of an entire folder."""
+    shutil.make_archive(output_filename, 'zip', folder_path)
 
 
 def populate_pdf(input_pdf_path, output_pdf_path, data_dict):
