@@ -3,3 +3,6 @@ pdfrw==0.4
 PyPDF2==3.0.1
 streamlit==1.18.1
 altair==4.0
+reportlab==4.0.7
+fillpdf==0.7.2
+pikepdf==8.7.1

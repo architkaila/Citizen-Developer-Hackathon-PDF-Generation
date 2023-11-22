@@ -23,5 +23,16 @@ sheet_mapping = { 'name':"Full name",
   'audit': 'Audit',
   'departmental_code':'None',
   'signature_professor':'None',
+  'approval_proof':'Professor Approval Screenshot',
 }
   
+
+sample_proof = '[{"name":"QRCode for Course Application form_Trudy Jones.png",\
+                 "link":"https://prodduke-my.sharepoint.com/personal/tajones_duke_edu/Documents/Apps/Microsoft%20Forms/Course%20Application%20form/Question/QRCode%20for%20Course%20Application%20form_Trudy%20Jones.png",\
+                 "id":"01GKEGQGH3KN7L7LUZDBEJ6OPJKNRZCDOL",\
+                 "type":null,\
+                 "size":472324,\
+                 "referenceId":"01GKEGQGECPV6XP3F3VBD3OD5QTQXLTHKW",\
+                 "driveId":"b!bKJiXWGQGEapWL8pbs7WVt7i9GIfBwFApna-68BU8WChj0VjPwWcSYQYsWS_DUKu",\
+                 "status":1,\
+                 "uploadSessionUrl":null}]'

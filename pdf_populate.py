@@ -1,12 +1,13 @@
 import csv
-import PyPDF2
 import pdfrw
 from datetime import date
 from mapping import sheet_mapping
 import openpyxl
 from pdfrw import PdfDict, PdfObject
 import shutil   
+from pikepdf import Pdf
 
+# Get today's date
 today = date.today()
 
 def read_csv(filename):
@@ -50,7 +51,7 @@ def zip_folder(folder_path, output_filename):
     shutil.make_archive(output_filename, 'zip', folder_path)
 
 
-def populate_pdf(input_pdf_path, output_pdf_path, data_dict):
+def populate_pdf(input_pdf_path, output_pdf_path, data_dict, approval_image_path=None):
     """
     Populates a PDF form with data from a dictionary
 
@@ -101,12 +102,57 @@ def populate_pdf(input_pdf_path, output_pdf_path, data_dict):
                     annotation.update(pdfrw.PdfDict(AP="Yes", V="Yes"))
 
     ## Save the PDF with the data
-    template.Root.AcroForm.update(PdfDict(NeedAppearances=PdfObject("true")))
-    pdfrw.PdfWriter().write(output_pdf_path, template)
+    #template.Root.AcroForm.update(PdfDict(NeedAppearances=PdfObject("true")))
 
+    if "/AcroForm" in template.Root:
+        print("true")
+        template.Root.AcroForm.update(PdfDict(NeedAppearances=PdfObject("true")))
+    else:
+        print("false")
+        # If there's no AcroForm, add one with the /NeedAppearances flag set
+        template.Root.update(PdfDict(AcroForm=PdfDict(NeedAppearances=PdfObject("true"))))
 
+    
+    # Create the final PDF writer
+    final_pdf_writer = pdfrw.PdfWriter()
+
+    # Add the template pages
+    final_pdf_writer.addpages(template.pages)
+
+    # Add the approval image pages if they exist
+    if approval_image_path is not None:
+        # Read the approval image
+        reader = pdfrw.PdfReader(approval_image_path)
+        
+        # Add the approval image pages
+        final_pdf_writer.addpages(reader.pages)
+
+    # Write the PDF to disk
+    temp_output_path = './data/temp_output.pdf'
+    final_pdf_writer.write(temp_output_path)
+    
+
+    reader_final = pdfrw.PdfReader(temp_output_path)
+    if "/AcroForm" in reader_final.Root:
+        print("true")
+        reader_final.Root.AcroForm.update(PdfDict(NeedAppearances=PdfObject("true")))
+    else:
+        print("false")
+        # If there's no AcroForm, add one with the /NeedAppearances flag set
+        reader_final.Root.update(PdfDict(AcroForm=PdfDict(NeedAppearances=PdfObject("true"))))
+
+    
+    final_pdf_writer = pdfrw.PdfWriter(output_pdf_path)
+    final_pdf_writer.addpages(reader_final.pages)
+    final_pdf_writer.write()
+
+    with Pdf.open(temp_output_path) as pdf:
+        pdf.generate_appearance_streams()
+        pdf.save(output_pdf_path)
+
+# Main function
 def main():
-    #csv_data = read_csv('data.csv')
+    # Read the data from the file
     data = read_excel('./data/Fuqua Form Automation Excel.xlsx')
     
     for i, row in enumerate(data):
