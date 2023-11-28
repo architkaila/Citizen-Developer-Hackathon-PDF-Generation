@@ -107,10 +107,15 @@ def run_UI():
                             approval_image_path = f'./data/approval_images/{link_dict[0]["id"]}.pdf'
 
                             # Sanitize the filename
-                            print(sanitize_filename(link_dict[0]["name"]))
-                            # Convert the image to pdf
-                            convert_image_to_pdf(f'./data/approval_images/{approval_images.name[:-4]}{sanitize_filename(link_dict[0]["name"])}', f'./data/approval_images/{link_dict[0]["id"]}.pdf')
-
+                            file_name = sanitize_filename(link_dict[0]["name"])
+                            path_components = file_name.split(".")
+                            print("Processing: ", file_name)
+                            
+                            if path_components[-1] != "pdf":
+                                # Convert the image to pdf
+                                convert_image_to_pdf(f'./data/approval_images/{approval_images.name[:-4]}{sanitize_filename(link_dict[0]["name"])}', f'./data/approval_images/{link_dict[0]["id"]}.pdf')
+                            else:
+                                approval_image_path=None
                         # Populate the PDF with the data
                         populate_pdf(input_pdf_path, output_pdf_path, row, approval_image_path)
                         print(f"[INFO] Generated PDF: {row['Full name']}")
